@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Navya 💖</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Georgia', serif; }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #fbc2eb 100%);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  /* ================= GATE SCREEN ================= */
+  #gate {
+    text-align: center;
+    background: rgba(255,255,255,0.85);
+    padding: 45px 40px;
+    border-radius: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    max-width: 480px;
+    width: 90%;
+    z-index: 10;
+    position: relative;
+    animation: popIn 0.8s ease;
+  }
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .sticker-row {
+    font-size: 2.4rem;
+    margin-bottom: 15px;
+    letter-spacing: 8px;
+    animation: bounceSticker 2s infinite;
+  }
+  @keyframes bounceSticker {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  #gate h1 {
+    color: #e91e63;
+    font-size: 1.7rem;
+    margin-bottom: 25px;
+    line-height: 1.4;
+  }
+
+  .btn {
+    border: none;
+    padding: 14px 42px;
+    font-size: 1.2rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin: 8px;
+  }
+  #yesBtn {
+    background: linear-gradient(135deg, #ff4081, #e91e63);
+    color: white;
+    box-shadow: 0 6px 18px rgba(233,30,99,0.45);
+  }
+  #yesBtn:hover { transform: scale(1.08); }
+  #yesBtn:disabled { opacity: 0.6; cursor: wait; }
+  #noBtn {
+    background: #eee;
+    color: #666;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    position: relative;
+  }
+
+  /* ================= CAMERA PREVIEW ================= */
+  #camWrap {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 140px;
+    height: 105px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    border: 3px solid #e91e63;
+    z-index: 50;
+    background: #000;
+  }
+  #camWrap video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+  #camFlash {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 60;
+    transition: opacity 0.12s;
+  }
+  #camFlash.on { opacity: 0.9; }
+
+  #camStatus {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.95);
+    color: #e91e63;
+    padding: 10px 22px;
+    border-radius: 30px;
+    font-weight: bold;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    z-index: 55;
+    font-size: 0.95rem;
+    animation: pulseHint 1.2s infinite;
+  }
+
+  /* ================= BOOK ================= */
+  #bookStage {
+    display: none;
+    perspective: 2500px;
+    width: 90%;
+    max-width: 480px;
+    height: 620px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .book {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+  }
+
+  .page {
+    position: absolute;
+    inset: 0;
+    background: #fffdf7;
+    border-radius: 6px 16px 16px 6px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    padding: 50px 35px;
+    backface-visibility: hidden;
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: transform 1.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+    border-left: 6px solid #e91e63;
+  }
+
+  .page h2 { color: #e91e63; font-size: 1.6rem; margin-bottom: 18px; }
+  .page p { color: #555; font-size: 1.08rem; line-height: 1.75; }
+
+  .page .sticker { font-size: 2.6rem; margin-bottom: 15px; }
+
+  #page1 { z-index: 3; }
+  #page2 { z-index: 2; }
+  #page3 { z-index: 1; }
+
+  .page.flipped { transform: rotateY(-180deg); }
+
+  .hint {
+    position: absolute;
+    bottom: 18px;
+    right: 22px;
+    font-size: 0.85rem;
+    color: #e91e63;
+    opacity: 0.7;
+    animation: pulseHint 1.5s infinite;
+  }
+  @keyframes pulseHint { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+
+  /* ================= FINALE ================= */
+  #finale {
+    display: none;
+    text-align: center;
+    z-index: 20;
+    position: relative;
+    animation: finaleZoom 1.2s ease;
+    max-width: 92vw;
+  }
+  @keyframes finaleZoom {
+    0% { transform: scale(0.3); opacity: 0; }
+    60% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+  #finale h1 {
+    font-size: 3rem;
+    color: #e91e63;
+    text-shadow: 0 0 20px rgba(233,30,99,0.6), 0 0 40px rgba(255,64,129,0.4);
+    animation: glowPulse 1.6s ease-in-out infinite alternate;
+  }
+  @keyframes glowPulse {
+    from { text-shadow: 0 0 15px rgba(233,30,99,0.5), 0 0 30px rgba(255,64,129,0.3); transform: scale(1); }
+    to   { text-shadow: 0 0 30px rgba(233,30,99,0.9), 0 0 60px rgba(255,64,129,0.7); transform: scale(1.05); }
+  }
+  #finale .big-heart {
+    font-size: 3.6rem;
+    animation: heartBeat 1s infinite;
+    display: inline-block;
+    margin-top: 10px;
+  }
+  @keyframes heartBeat {
+    0%,100% { transform: scale(1); }
+    25% { transform: scale(1.25); }
+    40% { transform: scale(1); }
+    60% { transform: scale(1.2); }
+  }
+  #finale p {
+    margin-top: 14px;
+    color: #7a3b52;
+    font-size: 1.05rem;
+    font-style: italic;
+  }
+
+  /* ---------- POLAROID GALLERY ---------- */
+  #gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 22px;
+    max-width: 92vw;
+  }
+  .polaroid {
+    background: #fff;
+    padding: 8px 8px 26px 8px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+    border-radius: 3px;
+    transform: rotate(var(--rot, -3deg)) scale(0);
+    animation: dropIn 0.7s forwards;
+    animation-delay: var(--delay, 0s);
+    width: 120px;
+    position: relative;
+  }
+  .polaroid img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    display: block;
+    border-radius: 2px;
+    background: #ddd;
+  }
+  .polaroid::after {
+    content: '💕';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+  }
+  @keyframes dropIn {
+    0% { transform: rotate(var(--rot)) scale(0) translateY(-80px); opacity: 0; }
+    70% { transform: rotate(var(--rot)) scale(1.1) translateY(6px); opacity: 1; }
+    100% { transform: rotate(var(--rot)) scale(1) translateY(0); opacity: 1; }
+  }
+
+  /* floating hearts */
+  .floating-heart {
+    position: fixed;
+    bottom: -50px;
+    animation: rise linear forwards;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.85;
+  }
+  @keyframes rise {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0.85; }
+    100% { transform: translateY(-115vh) rotate(360deg); opacity: 0; }
+  }
+
+  .sparkle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 19;
+    animation: sparkleFall linear forwards;
+  }
+  @keyframes sparkleFall {
+    0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ GATE ============ -->
+<div id="gate">
+  <div class="sticker-row">💌 🌸 🧸 💖 🎀</div>
+  <h1>Hey Navya… 💕<br>I have something special for you.<br>Want to open it?</h1>
+  <button class="btn" id="yesBtn">Yes 💖</button>
+  <button class="btn" id="noBtn">No 🙈</button>
+</div>
+
+<!-- camera bits -->
+<div id="camStatus">📸 Taking 4 little memories… smile! 😊</div>
+<div id="camWrap"><video id="video" autoplay playsinline muted></video></div>
+<div id="camFlash"></div>
+<canvas id="snapCanvas" style="display:none;"></canvas>
+
+<!-- ============ BOOK ============ -->
+<div id="bookStage">
+  <div class="book">
+    <div class="page" id="page3">
+      <div class="sticker">🌹</div>
+      <h2>Page 3</h2>
+      <p>And even on my darkest days,<br>
+      your smile is the light I look for.<br><br>
+      Navya, you are my forever.<br>
+      Turn the page, my love… 💞</p>
+      <div class="hint">tap the page 👉</div>
+    </div>
+
+    <div class="page" id="page2">
+      <div class="sticker">✨</div>
+      <h2>Page 2</h2>
+      <p>Every laugh we share,<br>
+      every silly fight,<br>
+      every quiet moment —<br><br>
+      they all mean the world to me.<br>
+      You make ordinary days magical.</p>
+      <div class="hint">tap the page 👉</div>
+    </div>
+
+    <div class="page" id="page1">
+      <div class="sticker">💌</div>
+      <h2>Page 1</h2>
+      <p>Dear Navya,<br><br>
+      From the day you walked into my life,<br>
+      everything changed for the better.<br><br>
+      You are my favorite hello<br>
+      and my hardest goodbye.</p>
+      <div class="hint">tap the page 👉</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FINALE ============ -->
+<div id="finale">
+  <h1>I LOVE YOU</h1>
+  <div class="big-heart">❤️</div>
+  <p>…forever and always, Navya. 💕</p>
+  <div id="gallery"></div>
+</div>
+
+<script>
+/* ---------- Floating hearts ---------- */
+const heartEmojis = ['❤️','💖','💗','💕','💝','💞','🌸','✨'];
+function spawnFloatingHeart() {
+  const h = document.createElement('div');
+  h.className = 'floating-heart';
+  h.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
+  h.style.left = Math.random()*100 + 'vw';
+  h.style.fontSize = (Math.random()*1.6 + 1) + 'rem';
+  h.style.animationDuration = (Math.random()*6 + 6) + 's';
+  document.body.appendChild(h);
+  setTimeout(() => h.remove(), 13000);
+}
+setInterval(spawnFloatingHeart, 450);
+
+/* ---------- NO button runs away ---------- */
+const noBtn = document.getElementById('noBtn');
+function moveNoButton() {
+  noBtn.style.position = 'fixed';
+  noBtn.style.transition = 'top 0.3s ease, left 0.3s ease';
+  const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+  const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+  noBtn.style.left = Math.max(10, Math.random() * maxX) + 'px';
+  noBtn.style.top  = Math.max(10, Math.random() * maxY) + 'px';
+}
+noBtn.addEventListener('mouseenter', moveNoButton);
+noBtn.addEventListener('click', (e) => { e.preventDefault(); moveNoButton(); });
+noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNoButton(); }, {passive:false});
+
+/* =====================================================
+   CAMERA + RANDOM 4 PHOTO CAPTURE
+   ===================================================== */
+const yesBtn      = document.getElementById('yesBtn');
+const gate        = document.getElementById('gate');
+const bookStage   = document.getElementById('bookStage');
+const camStatus   = document.getElementById('camStatus');
+const camWrap     = document.getElementById('camWrap');
+const camFlash    = document.getElementById('camFlash');
+const video       = document.getElementById('video');
+const canvas      = document.getElementById('snapCanvas');
+
+let capturedPhotos = [];   // will hold dataURLs
+let streamRef = null;
+
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+async function captureFourPhotos() {
+  // 1. ask for camera
+  try {
+    streamRef = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+      audio: false
+    });
+  } catch (err) {
+    console.warn('Camera denied/unavailable:', err);
+    return false; // no camera → just skip
+  }
+
+  // 2. show preview
+  video.srcObject = streamRef;
+  await video.play().catch(()=>{});
+  camWrap.style.display = 'block';
+  camStatus.style.display = 'block';
+  await sleep(700); // give the camera a moment to warm up
+
+  // 3. take 4 random photos with random delays
+  const delays = [
+    400 + Math.random() * 700,
+    500 + Math.random() * 900,
+    400 + Math.random() * 800,
+    600 + Math.random() * 900
+  ];
+
+  for (let i = 0; i < 4; i++) {
+    await sleep(delays[i]);
+
+    // flash effect
+    camFlash.classList.add('on');
+    setTimeout(() => camFlash.classList.remove('on'), 120);
+
+    // draw the current video frame on the canvas
+    const vw = video.videoWidth  || 640;
+    const vh = video.videoHeight || 480;
+    canvas.width  = vw;
+    canvas.height = vh;
+    const ctx = canvas.getContext('2d');
+    // mirror horizontally (selfie) then draw
+    ctx.save();
+    ctx.translate(vw, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, 0, 0, vw, vh);
+    ctx.restore();
+
+    capturedPhotos.push(canvas.toDataURL('image/jpeg', 0.85));
+    camStatus.textContent = `📸 Memory ${i+1} of 4 captured… 💖`;
+  }
+
+  // 4. shut camera down (privacy 🫶)
+  streamRef.getTracks().forEach(t => t.stop());
+  camWrap.style.display = 'none';
+  camStatus.style.display = 'none';
+  await sleep(300);
+  return true;
+}
+
+/* ---------- YES button ---------- */
+yesBtn.addEventListener('click', async () => {
+  yesBtn.disabled = true;
+  yesBtn.textContent = 'Opening… 💫';
+
+  await captureFourPhotos();   // may or may not succeed
+
+  gate.style.display = 'none';
+  bookStage.style.display = 'block';
+});
+
+/* ---------- Page flipping ---------- */
+const page1 = document.getElementById('page1');
+const page2 = document.getElementById('page2');
+const page3 = document.getElementById('page3');
+const finale = document.getElementById('finale');
+let state = 0;
+
+page1.addEventListener('click', () => { if (state===0){ page1.classList.add('flipped'); state=1; }});
+page2.addEventListener('click', () => { if (state===1){ page2.classList.add('flipped'); state=2; }});
+page3.addEventListener('click', () => {
+  if (state===2){
+    page3.classList.add('flipped');
+    state=3;
+    setTimeout(showFinale, 1000);
+  }
+});
+
+function showFinale() {
+  bookStage.style.display = 'none';
+  finale.style.display = 'block';
+  renderGallery();
+  launchConfetti();
+}
+
+/* ---------- Polaroid gallery ---------- */
+function renderGallery() {
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';
+  if (capturedPhotos.length === 0) return;
+
+  const rotations = [-6, 4, -3, 7];
+  capturedPhotos.forEach((src, i) => {
+    const card = document.createElement('div');
+    card.className = 'polaroid';
+    card.style.setProperty('--rot', rotations[i % rotations.length] + 'deg');
+    card.style.setProperty('--delay', (i * 0.18) + 's');
+
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = 'Memory ' + (i+1);
+
+    card.appendChild(img);
+    gallery.appendChild(card);
+  });
+}
+
+/* ---------- Confetti ---------- */
+const sparkleEmojis = ['✨','💖','💕','🌟','❤️','🎉','💫'];
+function launchConfetti() {
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      s.textContent = sparkleEmojis[Math.floor(Math.random()*sparkleEmojis.length)];
+      s.style.left = Math.random()*100 + 'vw';
+      s.style.fontSize = (Math.random()*1.5 + 0.8) + 'rem';
+      s.style.animationDuration = (Math.random()*2.5 + 2.5) + 's';
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 6000);
+    }, i * 80);
+  }
+}
+</script>
+
+</body>
+</html>
